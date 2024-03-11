@@ -4,8 +4,21 @@ import {LlamaModel, LlamaContext, LlamaChatSession} from "node-llama-cpp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const model = new LlamaModel({    
-    modelPath: path.join(__dirname, "models", "capybarahermes-2.5-mistral-7b.Q4_K_M.gguf")
+let modelName = "capybarahermes-2.5-mistral-7b.Q4_K_M.gguf";
+let modelDir = path.join(__dirname, "models")
+
+if(process.env.LLAMA_MODEL) { 
+  modelName = process.env.LLAMA_MODEL;
+}
+
+if(process.env.LLAMA_MODEL_DIR) { 
+  modelDir = process.env.LLAMA_MODEL_DIR;
+}
+const modelFullPath = path.join(modelDir, modelName);
+console.log('==> MODEL: ' + modelFullPath);
+
+const model = new LlamaModel({      
+  modelPath: modelFullPath
 });
 const context = new LlamaContext({model});
 const session = new LlamaChatSession({context});

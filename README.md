@@ -26,6 +26,15 @@ The [`./go`][3] script:
 
 You can use the [quit] command from the prompt or simply terminate the process.
 
+### Environment variables
+
+You can change the following elements from environment variables:
+
+| Variable name | Default | 
+|-|-|
+| LLAMA_MODEL | capybarahermes-2.5-mistral-7b.Q4_K_M.gguf |
+| LLAMA_MODEL_DIR | \models |
+
 ## Future work
 
 - Allow files to be loaded.
