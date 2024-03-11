@@ -1,0 +1,15 @@
+{
+  "name": "local_ai_server",
+  "version": "1.0.0",
+  "description": "Runs a simple LLM locally",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Quintin Balsdon",
+  "license": "ISC",
+  "dependencies": {
+    "node-llama-cpp": "^2.8.8"
+  }
+}
