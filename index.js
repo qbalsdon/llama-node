@@ -21,12 +21,19 @@ if(process.env.LLAMA_MODEL_DIR) {
   modelDir = process.env.LLAMA_MODEL_DIR;
 }
 const modelFullPath = path.join(modelDir, modelName);
-console.log('==> MODEL: ' + modelFullPath);
+if (fs.existsSync(modelFullPath)) {
+  console.log('==> MODEL: [' + modelFullPath + ']');
+} else {
+  console.log('!!  MODEL NOT FOUND AT [' + modelFullPath + ']');
+  process.abort();
+}
 
-const model = new LlamaModel({      
+const llamaModel = new LlamaModel({      
   modelPath: modelFullPath
 });
-const context = new LlamaContext({model});
+const context = new LlamaContext({
+  model: llamaModel
+});
 const session = new LlamaChatSession({context});
 
 import * as rl from 'node:readline'; // Import the entire readline module or specific methods
@@ -34,7 +41,7 @@ const { stdin: input, stdout: output } = process;
 const readline = rl.createInterface({ input, output });
 var userContinue = true;
 
-async function askGemma(prompt) {
+async function askLLM(prompt) {
   try {
     const response = await session.prompt(prompt);
     return response;
@@ -95,7 +102,9 @@ function processUserInput(callback) {
         userContinue = false;
         callback("Goodbye");
       }
-      // [load /Users/quintinb/Sandbox/BigQuery/schema.json] What does schema.json describe?
+      // [load /Users/quintinbalsdon/Sandbox/wcag.json] What does wcag.json describe?
+      // What does /Users/quintinbalsdon/Sandbox/wcag.json describe?
+      // [load /Users/quintinbalsdon/Sandbox/test.txt] What is the sentiment of test.txt?
       if (userInput.includes('[load')) {        
         const inputStr = removeFirstBracketedSubstring(userInput);
         const fileList = extractList(inputStr);
@@ -127,10 +136,10 @@ function processUserInput(callback) {
     try {
       console.log("");      
       const aiPrompt = await new Promise((resolve) => processUserInput(resolve));
-      const response = await askGemma(aiPrompt);
-      console.log("=".repeat(10) + " [GEMMA] " + "=".repeat(10));
+      const response = await askLLM(aiPrompt);
+      console.log("=".repeat(10) + " [" + modelName.replace(".gguf","").toUpperCase() + "] " + "=".repeat(10));
       console.log(response);
-      console.log("=".repeat(29));
+      console.log("=".repeat(24 + modelName.length));
     } catch (error) {
       console.error("Error:", error);
     } finally {
